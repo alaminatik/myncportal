@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\ClientDetail;
+use App\Models\TicketReply;
 use App\Models\Tiket;
+use App\Models\TiketFile;
 use Illuminate\Http\Request;
 
 class TiketController extends Controller
@@ -31,7 +33,8 @@ class TiketController extends Controller
      */
     public function store(Request $request)
     {
-        $ticket = new Tiket;
+        // for ticket
+        $ticket = new Tiket();
         $ticket->ticket_number = 1;
         $ticket->company_id = 1;
         $ticket->user_id = $request->user_id;
@@ -39,6 +42,22 @@ class TiketController extends Controller
         $ticket->status = 'open';
         $ticket->priority = 'low';     
         $ticket->save();
+
+         // for ticket description
+         $ticketDescription = new TicketReply();
+         $ticketDescription->ticket_id  = $ticket->id;
+         $ticketDescription->user_id   = $request->user_id;
+         $ticketDescription->message = $request->description;            
+         $ticketDescription->save();
+
+         // for ticket file
+         $ticketFile = new TiketFile();
+         $ticketDescription->ticket_reply_id  = $ticketDescription->id;
+         $ticketDescription->user_id   = $request->user_id;
+         $ticketFile->filename = $request->ticket_subject;
+            
+         $ticketFile->save();
+
     }
 
     /**

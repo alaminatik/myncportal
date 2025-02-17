@@ -7,6 +7,7 @@ use App\Models\TicketReply;
 use App\Models\Tiket;
 use App\Models\TiketFile;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class TiketController extends Controller
 {
@@ -33,6 +34,13 @@ class TiketController extends Controller
      */
     public function store(Request $request)
     {
+
+        $request->validate([
+            'user_id' => "nulable",
+            'ticket_subject' => "nulable",
+            'description' => "nulable",
+        ]);
+
         // for ticket
         $ticket = new Tiket();
         $ticket->ticket_number = 1;
@@ -51,11 +59,34 @@ class TiketController extends Controller
          $ticketDescription->save();
 
          // for ticket file
+
          $ticketFile = new TiketFile();
-         $ticketDescription->ticket_reply_id  = $ticketDescription->id;
-         $ticketDescription->user_id   = $request->user_id;
-         $ticketFile->filename = $request->ticket_subject;
-            
+
+          if ($request->ticket_file) {
+            try {
+                 $extension = $request->img->getClientOriginalExtension();
+                 $request->img->getClientOriginalName();
+                 
+                 $img_name = str_replace(array(' ','/'),array('_',''),''.time(). '.' .$extension);
+                 $img_path = env('upload_user_file').'uploaded-docs/files/';
+                 $data['file_path'] = $img_src = 'uploaded-docs/apifiles/' . $img_name;
+                 $data['file_name'] = $img_name;
+
+                 $request->img->move($img_path, $img_name);
+                 $ticketFile->filename = $img_name;
+                 
+            } catch (\Exception $e) {
+  
+                Log::info('error'.$e->getMessage());
+            }
+  
+             
+          }
+
+
+         
+         $ticketFile->ticket_reply_id  = $ticketDescription->id;
+         $ticketFile->user_id   = $request->user_id;          
          $ticketFile->save();
 
     }

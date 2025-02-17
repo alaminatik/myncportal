@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ClientDetail;
 use App\Models\Tiket;
 use Illuminate\Http\Request;
 
@@ -20,8 +21,9 @@ class TiketController extends Controller
      */
     public function create()
     {
+        $data['clients'] = ClientDetail::where('company_name','!=', NULL)->get(); 
 
-        return view('tiket');
+        return view('tiket',$data);
     }
 
     /**
@@ -30,10 +32,12 @@ class TiketController extends Controller
     public function store(Request $request)
     {
         $ticket = new Tiket;
-        $ticket->name = $request->name;
-        $ticket->title = $request->title;
-        $ticket->discription = $request->discription;
-       
+        $ticket->ticket_number = 1;
+        $ticket->company_id = 1;
+        $ticket->user_id = $request->user_id;
+        $ticket->subject = $request->ticket_subject;
+        $ticket->status = 'open';
+        $ticket->priority = 'low';     
         $ticket->save();
     }
 

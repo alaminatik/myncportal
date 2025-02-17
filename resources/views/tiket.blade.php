@@ -15,26 +15,28 @@
   <form action="/action_page.php">
     <div class="form-group">
         <label for="cars">Choose a Client:</label>
-        <select class="form-control" name="cars" id="cars">
-          <option value="volvo">Volvo</option>
-          <option value="saab">Saab</option>
-          <option value="opel">Opel</option>
-          <option value="audi">Audi</option>
+        <select class="form-control" name="user_id" id="cars">
+        @foreach ($clients as $item)
+            
+        <option value="{{ $item->user_id }}" @if ($item->company_name === 'Greene Technology') @selected(true) @endif >{{ $item->company_name }}</option>
+
+        @endforeach
+          
         </select>
     </div>
     <div class="form-group">
-      <label for="email">Name:</label>
-      <input type="text" class="form-control" id="name" placeholder="Enter name" name="name">
-    </div>
-    <div class="form-group">
-        <label for="pwd">Title:</label>
-        <input type="text" class="form-control" id="pwd" placeholder="Enter Title" name="title">
-    </div>
-    <div class="form-group">
-        <label for="comment">Description:</label>
-        <textarea class="form-control" rows="5" id="comment"></textarea>
+      <label for="email">Ticket Subject:</label>
+      <input type="text" class="form-control" id="ticket_subject" placeholder="Ticket Subject" name="ticket_subject">
     </div>
     
+    <div class="form-group">
+        <label for="comment">Description:</label>
+        <textarea class="form-control" rows="5" id="comment" name="description" placeholder="Description"></textarea>
+    </div>
+    <div class="form-group">
+        <label for="pwd">Upload File:</label>
+        <input type="file" class="form-control" id="ticket_file"  name="ticket_file">
+    </div>
     
     <button type="submit" class="btn btn-success">Save</button>
   </form>

@@ -11,6 +11,15 @@ use Illuminate\Support\Facades\Log;
 
 class TiketController extends Controller
 {
+    // public function __construct()
+    // {
+
+    //     if(!isset($_SESSION)) 
+    //     { 
+    //         session_start(); 
+    //     }
+
+    // }
     /**
      * Display a listing of the resource.
      */
@@ -36,25 +45,39 @@ class TiketController extends Controller
     {
 
         $request->validate([
-            'user_id' => "nulable",
-            'ticket_subject' => "nulable",
-            'description' => "nulable",
+            'user_id' => "required",
+            'ticket_subject' => "required",
+            'description' => "required",
+            'ticket_file' => 'required|file|max:5120',
+        ],
+        [
+            'user_id.required' => 'The Client field is required. Please fill it in.',
+            'ticket_file.required' => 'Please select a file to upload.',
         ]);
+
+        // return $request;
 
         // for ticket
         $ticket = new Tiket();
-        $ticket->ticket_number = 1;
         $ticket->company_id = 1;
         $ticket->user_id = $request->user_id;
         $ticket->subject = $request->ticket_subject;
         $ticket->status = 'open';
         $ticket->priority = 'low';     
+        $ticket->added_by = 1;     
         $ticket->save();
+
+        if(isset($ticket->id)){
+
+            $ticketNumberUpdate = Tiket::find($ticket->id);
+            $ticketNumberUpdate->ticket_number = $ticket->id;     
+            $ticketNumberUpdate->save();
+        }
 
          // for ticket description
          $ticketDescription = new TicketReply();
          $ticketDescription->ticket_id  = $ticket->id;
-         $ticketDescription->user_id   = $request->user_id;
+         $ticketDescription->user_id   = 1;
          $ticketDescription->message = $request->description;            
          $ticketDescription->save();
 
@@ -64,16 +87,16 @@ class TiketController extends Controller
 
           if ($request->ticket_file) {
             try {
-                 $extension = $request->img->getClientOriginalExtension();
-                 $request->img->getClientOriginalName();
                  
-                 $img_name = str_replace(array(' ','/'),array('_',''),''.time(). '.' .$extension);
-                 $img_path = env('upload_user_file').'uploaded-docs/files/';
-                 $data['file_path'] = $img_src = 'uploaded-docs/apifiles/' . $img_name;
-                 $data['file_name'] = $img_name;
+                 // for file upload
+                $extension = $request->ticket_file->getClientOriginalExtension();
+                $img_name = str_replace(' ', '_',date('YmdHis')) . '.' . $extension;
+                $img_path = 'user-uploads/ticket-files/'.$ticket->id.'/';
+                $img_src = 'user-uploads/ticket-files/'.$ticket->id.'/' . $img_name;
+                $request->ticket_file->move($img_path, $img_name);
 
-                 $request->img->move($img_path, $img_name);
-                 $ticketFile->filename = $img_name;
+                $ticketFile->filename  = $img_name;
+                $ticketFile->hashname  = $img_name;
                  
             } catch (\Exception $e) {
   
@@ -86,9 +109,10 @@ class TiketController extends Controller
 
          
          $ticketFile->ticket_reply_id  = $ticketDescription->id;
-         $ticketFile->user_id   = $request->user_id;          
+         $ticketFile->user_id   = 1;          
          $ticketFile->save();
 
+         return redirect()->back()->with('success','Your info save successfully');
     }
 
     /**

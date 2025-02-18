@@ -8,4 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class TiketFile extends Model
 {
     use HasFactory;
+    protected $table = 'ticket_files';
 }

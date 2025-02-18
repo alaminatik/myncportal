@@ -112,7 +112,7 @@ class TiketController extends Controller
          $ticketFile->user_id   = 1;          
          $ticketFile->save();
 
-         return redirect()->back()->with('success','Your info save successfully');
+         return redirect()->back()->with('success','Your ticket created successfully');
     }
 
     /**

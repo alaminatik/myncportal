@@ -25,7 +25,7 @@
 <div class="container">
 
   @if (session('success'))
-    <div class="alert alert-success" id="success-alert">
+    <div class="alert alert-success" id="success-alert" style="width: 40%;">
         {{ session('success') }}
     </div>
 

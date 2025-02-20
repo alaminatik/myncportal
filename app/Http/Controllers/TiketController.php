@@ -33,7 +33,7 @@ class TiketController extends Controller
      */
     public function create()
     {
-        $data['clients'] = ClientDetail::where('company_name','!=', NULL)->get(); 
+        $data['clients'] = ClientDetail::where('company_name','!=', NULL)->where('company_name','Greene Technology')->get(); 
 
         return view('tiket',$data);
     }
@@ -91,8 +91,9 @@ class TiketController extends Controller
                  // for file upload
                 $extension = $request->ticket_file->getClientOriginalExtension();
                 $img_name = str_replace(' ', '_',date('YmdHis')) . '.' . $extension;
-                $img_path = 'user-uploads/ticket-files/'.$ticket->id.'/';
-                $img_src = 'user-uploads/ticket-files/'.$ticket->id.'/' . $img_name;
+                
+                $img_path = env('FILE_PATH', '/home/myncportal/public_html/public/').$ticket->id.'/';
+                $img_src = env('FILE_PATH', '/home/myncportal/public_html/public/').$ticket->id.'/' . $img_name;
                 $request->ticket_file->move($img_path, $img_name);
 
                 $ticketFile->filename  = $img_name;

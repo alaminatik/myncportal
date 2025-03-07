@@ -125,14 +125,14 @@
           </div>
           @endif
       </div>
-      {{-- <div class="form-group">
+      <div class="form-group">
         <label for="pwd">Upload File</label>
         <input type="file" name="ticket_file">
           
-      </div> --}}
+      </div>
       <button type="submit" class="btn btn-primary">Submit Ticket</button>
     </form>
-    <br>
+    {{-- <br>
     <div class="form-group">
       <label for="pwd">Upload File</label>
       <form action="{{ route('tiket.store.file') }}" method="POST" enctype="multipart/form-data"
@@ -142,7 +142,7 @@
 
       <h5 id="message"></h5>
         
-    </div>
+    </div> --}}
   </div>
 </div>
 

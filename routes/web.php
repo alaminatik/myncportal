@@ -20,3 +20,4 @@ Route::get('/test', function () {
 
 Route::get('/', [TiketController::class, 'create'])->name('tiket.create');
 Route::post('/store', [TiketController::class, 'store'])->name('tiket.store');
+Route::post('/store/file', [TiketController::class, 'storeFile'])->name('tiket.store.file');

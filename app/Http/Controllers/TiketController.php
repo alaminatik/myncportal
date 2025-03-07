@@ -47,8 +47,9 @@ class TiketController extends Controller
         $request->validate([
             'user_id' => "required",
             'ticket_subject' => "required",
+            'priority' => "required",
             'description' => "required",
-            'ticket_file' => 'required|file|max:5120',
+            'ticket_file' => 'nullable|file|max:5120',
         ],
         [
             'user_id.required' => 'The Client field is required. Please fill it in.',
@@ -63,7 +64,7 @@ class TiketController extends Controller
         $ticket->user_id = $request->user_id;
         $ticket->subject = $request->ticket_subject;
         $ticket->status = 'open';
-        $ticket->priority = 'low';     
+        $ticket->priority = $request->priority;     
         $ticket->added_by = 1;     
         $ticket->save();
 
@@ -83,21 +84,36 @@ class TiketController extends Controller
 
          // for ticket file
 
-         $ticketFile = new TiketFile();
-
-          if ($request->ticket_file) {
-            try {
+         
+         if ($request->ticket_file) {
+             try {
+                $ticketFile = new TiketFile();
                  
                  // for file upload
+
+                $image = $request->file('file');   
+
+                $imageName = str_replace(' ', '_',date('YmdHis')) . '.'.$image->extension();
+                // $imageName = time().'.'.$image->extension();
+
                 $extension = $request->ticket_file->getClientOriginalExtension();
                 $img_name = str_replace(' ', '_',date('YmdHis')) . '.' . $extension;
                 
+                
                 $img_path = env('FILE_PATH', '/home/myncportal/public_html/public/').$ticket->id.'/';
                 $img_src = env('FILE_PATH', '/home/myncportal/public_html/public/').$ticket->id.'/' . $img_name;
-                $request->ticket_file->move($img_path, $img_name);
+                // $request->ticket_file->move($img_path, $img_name);
+                $image->move(public_path('user-uploads/ticket-files/'.$ticket->id.'/'),$imageName);
+
+                
+
 
                 $ticketFile->filename  = $img_name;
                 $ticketFile->hashname  = $img_name;
+
+                $ticketFile->ticket_reply_id  = $ticketDescription->id;
+                $ticketFile->user_id   = 1;          
+                $ticketFile->save();
                  
             } catch (\Exception $e) {
   
@@ -107,11 +123,51 @@ class TiketController extends Controller
              
           }
 
+         return redirect()->back()->with('success','Your ticket created successfully');
+    }
+
+    public function storeFile(Request $request)
+    {
+         // for ticket file
 
          
-         $ticketFile->ticket_reply_id  = $ticketDescription->id;
-         $ticketFile->user_id   = 1;          
-         $ticketFile->save();
+         if ($request->file) {
+             try {
+                $ticketFile = new TiketFile();
+                 
+                 // for file upload
+
+                $image = $request->file('file');   
+
+                $imageName = str_replace(' ', '_',date('YmdHis')) . '.'.$image->extension();
+                // $imageName = time().'.'.$image->extension();
+
+                // $extension = $request->ticket_file->getClientOriginalExtension();
+                // $img_name = str_replace(' ', '_',date('YmdHis')) . '.' . $extension;
+                
+                
+                $img_path = env('FILE_PATH', '/home/myncportal/public_html/public/').$ticket->id.'/';
+                $img_src = env('FILE_PATH', '/home/myncportal/public_html/public/').$ticket->id.'/' . $img_name;
+                // $request->ticket_file->move($img_path, $img_name);
+                $image->move(public_path('user-uploads/ticket-files/'.$ticket->id.'/'),$imageName);
+
+                
+
+
+                $ticketFile->filename  = $imageName;
+                $ticketFile->hashname  = $imageName;
+
+                $ticketFile->ticket_reply_id  = $ticketDescription->id;
+                $ticketFile->user_id   = 1;          
+                $ticketFile->save();
+                 
+            } catch (\Exception $e) {
+  
+                Log::info('error'.$e->getMessage());
+            }
+  
+             
+          }
 
          return redirect()->back()->with('success','Your ticket created successfully');
     }

@@ -49,14 +49,13 @@ class TiketController extends Controller
             'ticket_subject' => "required",
             'priority' => "required",
             'description' => "required",
-            'ticket_file' => 'nullable|file|max:5120',
+            'image' => 'nullable|file|max:5120',
         ],
         [
             'user_id.required' => 'The Client field is required. Please fill it in.',
-            'ticket_file.required' => 'Please select a file to upload.',
         ]);
 
-        // return $request;
+        // return $request->file('image');
 
         // for ticket
         $ticket = new Tiket();
@@ -85,77 +84,31 @@ class TiketController extends Controller
          // for ticket file
 
          
-         if ($request->ticket_file) {
+         if ($request->image) {
              try {
                 $ticketFile = new TiketFile();
                  
                  // for file upload
 
-                $image = $request->file('file');   
+                $imageFile = $request->file('image');   
 
-                $imageName = str_replace(' ', '_',date('YmdHis')) . '.'.$image->extension();
+                // $imageName = str_replace(' ', '_',date('YmdHis')) . '.'.$image->extension();
                 // $imageName = time().'.'.$image->extension();
 
-                $extension = $request->ticket_file->getClientOriginalExtension();
+                $extension = $request->image->getClientOriginalExtension();
                 $img_name = str_replace(' ', '_',date('YmdHis')) . '.' . $extension;
                 
                 
                 $img_path = env('FILE_PATH', '/home/myncportal/public_html/public/').$ticket->id.'/';
                 $img_src = env('FILE_PATH', '/home/myncportal/public_html/public/').$ticket->id.'/' . $img_name;
-                // $request->ticket_file->move($img_path, $img_name);
-                $image->move(public_path('user-uploads/ticket-files/'.$ticket->id.'/'),$imageName);
+                // $imageFile->move($img_path, $img_name);
+                $imageFile->move('user-uploads/ticket-files/'.$ticket->id.'/',$img_name);
 
                 
 
 
                 $ticketFile->filename  = $img_name;
                 $ticketFile->hashname  = $img_name;
-
-                $ticketFile->ticket_reply_id  = $ticketDescription->id;
-                $ticketFile->user_id   = 1;          
-                $ticketFile->save();
-                 
-            } catch (\Exception $e) {
-  
-                Log::info('error'.$e->getMessage());
-            }
-  
-             
-          }
-
-         return redirect()->back()->with('success','Your ticket created successfully');
-    }
-
-    public function storeFile(Request $request)
-    {
-         // for ticket file
-
-         
-         if ($request->file) {
-             try {
-                $ticketFile = new TiketFile();
-                 
-                 // for file upload
-
-                $image = $request->file('file');   
-
-                $imageName = str_replace(' ', '_',date('YmdHis')) . '.'.$image->extension();
-                // $imageName = time().'.'.$image->extension();
-
-                // $extension = $request->ticket_file->getClientOriginalExtension();
-                // $img_name = str_replace(' ', '_',date('YmdHis')) . '.' . $extension;
-                
-                
-                $img_path = env('FILE_PATH', '/home/myncportal/public_html/public/').$ticket->id.'/';
-                $img_src = env('FILE_PATH', '/home/myncportal/public_html/public/').$ticket->id.'/' . $img_name;
-                // $request->ticket_file->move($img_path, $img_name);
-                $image->move(public_path('user-uploads/ticket-files/'.$ticket->id.'/'),$imageName);
-
-                
-
-
-                $ticketFile->filename  = $imageName;
-                $ticketFile->hashname  = $imageName;
 
                 $ticketFile->ticket_reply_id  = $ticketDescription->id;
                 $ticketFile->user_id   = 1;          

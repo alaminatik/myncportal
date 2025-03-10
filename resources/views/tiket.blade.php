@@ -20,9 +20,30 @@
     });
   </script>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.0/min/dropzone.min.css">
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.0/min/dropzone.min.js"></script>
+<style>
+  
+  .upload-container {
+      width: 300px;
+      height: 200px;
+      border: 2px dashed #ccc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      cursor: pointer;
+  }
+  .upload-container.dragover {
+      border-color: #000;
+  }
+  #preview {
+      margin-top: 20px;
+      margin-bottom: 20px;
+  }
+  #preview img {
+      max-width: 100%;
+      max-height: 200px;
+  }
+</style>
 
 </head>
 <body>
@@ -125,65 +146,77 @@
           </div>
           @endif
       </div>
-      <div class="form-group">
-        <label for="pwd">Upload File</label>
-        <input type="file" name="ticket_file">
-          
+      <label for="comment">Upload File</label>
+      <div class="upload-container" id="dropzone">
+        <p>Drag and drop an image here or click to upload.</p>
       </div>
+      <input type="file" id="fileInput" name="image" style="display: none;" accept="image/*">
+      <input type="hidden" name="_token" value="{{ csrf_token() }}">
+      <div id="preview"></div>
+
       <button type="submit" class="btn btn-primary">Submit Ticket</button>
     </form>
-    {{-- <br>
-    <div class="form-group">
-      <label for="pwd">Upload File</label>
-      <form action="{{ route('tiket.store.file') }}" method="POST" enctype="multipart/form-data"
-          class="dropzone" id="myDragAndDropUploader">
-          @csrf
-      </form>
-
-      <h5 id="message"></h5>
-        
-    </div> --}}
   </div>
 </div>
 
 </body>
 </html>
 <script type="text/javascript">
+    const dropzone = document.getElementById('dropzone');
+    const fileInput = document.getElementById('fileInput');
+    const preview = document.getElementById('preview');
 
-  var maxFilesizeVal = 12;
-  var maxFilesVal = 2;
 
-  // Note that the name "myDragAndDropUploader" is the camelized id of the form.
-  Dropzone.options.myDragAndDropUploader = {
+    dropzone.addEventListener('dragover', (e) => {
+      // console.log('Dragover event fired');
+        e.preventDefault();
+        dropzone.classList.add('dragover');
+    });
 
-      paramName:"file",
-      maxFilesize: maxFilesizeVal, // MB
-      maxFiles: maxFilesVal,
-      resizeQuality: 1.0,
-      acceptedFiles: ".jpeg,.jpg,.png,.webp",
-      addRemoveLinks: false,
-      timeout: 60000,
-      dictDefaultMessage: "Drop your files here or click to upload",
-      dictFallbackMessage: "Your browser doesn't support drag and drop file uploads.",
-      dictFileTooBig: "File is too big. Max filesize: "+maxFilesizeVal+"MB.",
-      dictInvalidFileType: "Invalid file type. Only JPG, JPEG, PNG and GIF files are allowed.",
-      dictMaxFilesExceeded: "You can only upload up to "+maxFilesVal+" files.",
-      maxfilesexceeded: function(file) {
-          this.removeFile(file);
-          // this.removeAllFiles(); 
-      },
-      sending: function (file, xhr, formData) {
-          $('#message').text('Image Uploading...');
-      },
-      success: function (file, response) {
-          $('#message').text(response.success);
-          console.log(response.success);
-          console.log(response);
-      },
-      error: function (file, response) {
-          $('#message').text('Something Went Wrong! '+response);
-          console.log(response);
-          return false;
-      }
-  };
+    dropzone.addEventListener('dragleave', () => {
+        dropzone.classList.remove('dragover');
+    });
+
+    dropzone.addEventListener('drop', (e) => {
+      
+        e.preventDefault();
+        dropzone.classList.remove('dragover');
+        const file = e.dataTransfer.files[0];
+        // console.log('Drop event fired',file);
+        if (file.length > 0) {
+            let dataTransfer = new DataTransfer();
+            dataTransfer.items.add(files[0]); // Add file manually
+            fileInput.files = dataTransfer.files; // Assign files to input
+        }
+        handleFile(file);
+    });
+
+    dropzone.addEventListener('click', () => {
+        fileInput.click();
+    });
+
+    fileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        handleFile(file);
+    });
+
+
+
+    function handleFile(file) {
+        if (file && file.type.startsWith('image/')) {
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            fileInput.files = dataTransfer.files;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                preview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+            };
+            reader.readAsDataURL(file);
+        } else {
+            alert('Please upload a valid image file.');
+        }
+    }
+
+
 </script>

@@ -23,14 +23,17 @@
 <style>
   
   .upload-container {
-      width: 300px;
+      /* width: 300px; */
       height: 200px;
-      border: 2px dashed #ccc;
+      border: 2px dashed #899b8d;
       display: flex;
+      flex-direction: column; 
       align-items: center;
       justify-content: center;
       text-align: center;
       cursor: pointer;
+      background: rgba(0, 0, 0, 0.02);
+      border-radius: 8px;
   }
   .upload-container.dragover {
       border-color: #000;
@@ -43,6 +46,42 @@
       max-width: 100%;
       max-height: 200px;
   }
+  
+  /* Container for the button */
+  .refer-friend-button {
+        width: 100%; 
+        max-width: 310px; 
+        margin: 0 auto; 
+        padding: 10px; 
+        color: #147529;
+        background: #effef2;
+        border: .5px solid #126a25;
+        border-radius: 12px; 
+        cursor: pointer; 
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px; 
+    }
+
+    /* Content inside the button */
+    .button-content {
+        display: flex;
+        align-items: center;
+        gap: 8px; /* Space between icon and text */
+    }
+
+    /* Icon styling */
+    .refer-friend-button img {
+        width: 20px; /* Adjust as needed */
+        height: 20px; /* Adjust as needed */
+    }
+
+    /* Text styling */
+    .refer-friend-button span {
+        font-size: 16px; /* Adjust as needed */
+        color: #333; /* Text color */
+    }
 </style>
 
 </head>
@@ -112,10 +151,30 @@
           </div>
           @endif
       </div>    
+
+      <div class="form-group">
+        <label for="cars">Project Name</label>
+        <select class="form-control" name="project_name">
+          <option value="R3 Portal" {{ old('project_name') === 'R3 Portal' ? 'selected' : '' }}>R3 Portal</option>
+          <option value="R3 Medical Training Portal" {{ old('project_name') === 'R3 Medical Training Portal' ? 'selected' : '' }}>R3 Medical Training Portal</option>
+          <option value="R3 Marketing Portal" {{ old('project_name') === 'R3 Marketing Portal' ? 'selected' : '' }}>R3 Marketing Portal</option>
+          <option value="Regen Suppliers Magento Dashboard" {{ old('project_name') === 'Regen Suppliers Magento Dashboard' ? 'selected' : '' }}>Regen Suppliers Magento Dashboard</option>
+          <option value="R3 Alliance Portal" {{ old('project_name') === 'R3 Alliance Portal' ? 'selected' : '' }}>R3 Alliance Portal</option>
+          <option value="R3 Stem Cell Websites" {{ old('project_name') === 'R3 Stem Cell Websites' ? 'selected' : '' }}>R3 Stem Cell Websites</option>
+          <option value="R3 Medical Training Website" {{ old('project_name') === 'R3 Medical Training Website' ? 'selected' : '' }}>R3 Medical Training Website</option>
+          <option value="Regen Suppliers Website" {{ old('project_name') === 'Regen Suppliers Website' ? 'selected' : '' }}>Regen Suppliers Website</option>
+          <option value="R3 Alliance Website" {{ old('project_name') === 'R3 Alliance Website' ? 'selected' : '' }}>R3 Alliance Website</option>
+        </select>
+        @if ($errors->has('project_name'))
+        <div class="text-danger">
+            {{ $errors->first('project_name') }}
+        </div>
+        @endif
+      </div>
       
       <div class="form-group">
-        <label for="email">Project Name / Url</label>
-        <input type="text" class="form-control" id="ticket_subject" placeholder="Project Name / Url" name="ticket_subject" value="{{old('ticket_subject')}}">
+        <label for="email">Project Url</label>
+        <input type="text" class="form-control" id="ticket_subject" placeholder="Project Url" name="ticket_subject" value="{{old('ticket_subject')}}">
         @if ($errors->has('ticket_subject'))
         <div class="text-danger">
             {{ $errors->first('ticket_subject') }}
@@ -148,13 +207,22 @@
       </div>
       <label for="comment">Upload File</label>
       <div class="upload-container" id="dropzone">
-        <p>Drag and drop an image here or click to upload.</p>
+        <div class="refer-friend-button">
+          <div class="button-content">
+              <img src="https://bdtaxpro.com/assets/icons/file.svg" alt="Select File">
+              <span>Select File</span>
+          </div>
+        </div>
+        <div style="font-weight: 600;margin-top: 1.75rem;">
+
+          or drop a file
+        </div>
       </div>
       <input type="file" id="fileInput" name="image" style="display: none;" accept="image/*">
       <input type="hidden" name="_token" value="{{ csrf_token() }}">
       <div id="preview"></div>
 
-      <button type="submit" class="btn btn-primary">Submit Ticket</button>
+      <button type="submit" class="btn btn-primary" style="margin-left: 43%;">Submit Ticket</button>
     </form>
   </div>
 </div>

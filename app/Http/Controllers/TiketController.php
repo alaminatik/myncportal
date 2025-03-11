@@ -46,6 +46,7 @@ class TiketController extends Controller
 
         $request->validate([
             'user_id' => "required",
+            'project_name' => "required",
             'ticket_subject' => "required",
             'priority' => "required",
             'description' => "required",
@@ -61,6 +62,7 @@ class TiketController extends Controller
         $ticket = new Tiket();
         $ticket->company_id = 1;
         $ticket->user_id = $request->user_id;
+        $ticket->project_name = $request->project_name;
         $ticket->subject = $request->ticket_subject;
         $ticket->status = 'open';
         $ticket->priority = $request->priority;     

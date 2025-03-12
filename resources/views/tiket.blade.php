@@ -25,7 +25,7 @@
   .upload-container {
       /* width: 300px; */
       height: 200px;
-      border: 2px dashed #899b8d;
+      border: 1.5px dashed #899b8d;
       display: flex;
       flex-direction: column; 
       align-items: center;

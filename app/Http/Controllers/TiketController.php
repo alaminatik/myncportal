@@ -8,6 +8,7 @@ use App\Models\Tiket;
 use App\Models\TiketFile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Mail;
 
 class TiketController extends Controller
 {
@@ -47,8 +48,9 @@ class TiketController extends Controller
         $request->validate([
             'user_id' => "required",
             'project_name' => "required",
-            'ticket_subject' => "required",
+            'ticket_subject' => "nullable",
             'priority' => "required",
+            'email' => "required",
             'description' => "required",
             'image' => 'nullable|file|max:5120',
         ],
@@ -63,9 +65,18 @@ class TiketController extends Controller
         $ticket->company_id = 1;
         $ticket->user_id = $request->user_id;
         $ticket->project_name = $request->project_name;
-        $ticket->subject = $request->ticket_subject;
+
+        if($request->ticket_subject){
+
+            $ticket->subject = $request->ticket_subject;
+        } else {
+            
+            $ticket->subject = $request->project_name;
+        }
+
         $ticket->status = 'open';
         $ticket->priority = $request->priority;     
+        $ticket->email = $request->email;     
         $ticket->added_by = 1;     
         $ticket->save();
 
@@ -120,9 +131,31 @@ class TiketController extends Controller
   
                 Log::info('error'.$e->getMessage());
             }
-  
              
           }
+
+           // for email
+
+           $subject = 'Test Subject';
+           $des = $request->project_name;
+
+
+           $message = '';
+           $message .= '<h4>Congratulations</h4>';
+           $message .= '<p>Project Name <strong>'.$des .'</strong> </p>';
+           $data['email_content'] = $message;
+           $email = $request->email;
+
+           if(!empty($email)){
+            Mail::send('email.user_email', $data, function ($m) use ($subject,$email) {
+                $m->from('info@nochallenge.net', 'Nochallenge.net');
+                              
+                // $m->to($email)->cc('enayet@nochallenge.net')->subject($subject);
+                $m->to($email)->cc('alaminmia.jobs@gmail.com')->subject($subject);
+            });
+
+        }
+
 
          return redirect()->back()->with('success','Your ticket created successfully');
     }

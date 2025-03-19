@@ -155,15 +155,31 @@
       <div class="form-group">
         <label for="cars">Project Name</label>
         <select class="form-control" name="project_name">
-          <option value="R3 Portal" {{ old('project_name') === 'R3 Portal' ? 'selected' : '' }}>R3 Portal</option>
-          <option value="R3 Medical Training Portal" {{ old('project_name') === 'R3 Medical Training Portal' ? 'selected' : '' }}>R3 Medical Training Portal</option>
-          <option value="R3 Marketing Portal" {{ old('project_name') === 'R3 Marketing Portal' ? 'selected' : '' }}>R3 Marketing Portal</option>
-          <option value="Regen Suppliers Magento Dashboard" {{ old('project_name') === 'Regen Suppliers Magento Dashboard' ? 'selected' : '' }}>Regen Suppliers Magento Dashboard</option>
-          <option value="R3 Alliance Portal" {{ old('project_name') === 'R3 Alliance Portal' ? 'selected' : '' }}>R3 Alliance Portal</option>
-          <option value="R3 Stem Cell Websites" {{ old('project_name') === 'R3 Stem Cell Websites' ? 'selected' : '' }}>R3 Stem Cell Websites</option>
-          <option value="R3 Medical Training Website" {{ old('project_name') === 'R3 Medical Training Website' ? 'selected' : '' }}>R3 Medical Training Website</option>
-          <option value="Regen Suppliers Website" {{ old('project_name') === 'Regen Suppliers Website' ? 'selected' : '' }}>Regen Suppliers Website</option>
-          <option value="R3 Alliance Website" {{ old('project_name') === 'R3 Alliance Website' ? 'selected' : '' }}>R3 Alliance Website</option>
+              <!-- R3 Alliance -->
+            <optgroup label="R3 Alliance">         
+              <option value="R3 Alliance Website" {{ old('project_name') === 'R3 Alliance Website' ? 'selected' : '' }}>R3 Alliance Website</option>
+              <option value="R3 Alliance EMR" {{ old('project_name') === 'R3 Alliance EMR' ? 'selected' : '' }}>R3 Alliance EMR</option>
+            </optgroup>
+
+          <!-- R3 Websites -->
+          <optgroup label="R3 Websites">
+              <option value="R3 Legacy EMR" {{ old('project_name') === 'R3 Legacy EMR' ? 'selected' : '' }}>R3 Legacy EMR</option>
+              <option value="R3 Concierge" {{ old('project_name') === 'R3 Concierge' ? 'selected' : '' }}>R3 Concierge</option>
+              <option value="R3 Consultants" {{ old('project_name') === 'R3 Consultants' ? 'selected' : '' }}>R3 Consultants</option>
+              <option value="R3 Websites" {{ old('project_name') === 'R3 Websites' ? 'selected' : '' }}>R3 Websites</option>
+              <option value="R3 Marketing" {{ old('project_name') === 'R3 Marketing' ? 'selected' : '' }}>R3 Marketing</option>
+          </optgroup>
+
+          <!-- R3 Medical -->
+          <optgroup label="R3 Medical">
+              <option value="R3 Medical Training Website" {{ old('project_name') === 'R3 Medical Training Website' ? 'selected' : '' }}>R3 Medical Training Website</option>
+              <option value="R3 Medical Training Portal " {{ old('project_name') === 'R3 Medical Training Portal ' ? 'selected' : '' }}>R3 Medical Training Portal</option>
+          </optgroup>
+            <!-- Regen Supply -->
+          <optgroup label="Regen Supply">
+            <option value="Regen Website" {{ old('project_name') === 'Regen Website' ? 'selected' : '' }}>Regen Website</option>
+            <option value="Regen Admin" {{ old('project_name') === 'Regen Admin' ? 'selected' : '' }}>Regen Admin</option>
+          </optgroup>
         </select>
         @if ($errors->has('project_name'))
         <div class="text-danger">
@@ -221,6 +237,16 @@
       <input type="file" id="fileInput" name="image" style="display: none;" accept="image/*">
       <input type="hidden" name="_token" value="{{ csrf_token() }}">
       <div id="preview"></div>
+
+      <div class="form-group">
+        <label for="email">Your Email Address</label>
+        <input type="text" class="form-control" id="email" placeholder="Your Email Address" name="email" value="{{old('email')}}">
+        @if ($errors->has('email'))
+        <div class="text-danger">
+            {{ $errors->first('email') }}
+        </div>
+        @endif
+      </div>
 
       <button type="submit" class="btn btn-primary" style="margin-left: 43%;">Submit Ticket</button>
     </form>

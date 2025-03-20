@@ -300,11 +300,40 @@
 															<div class="contentEditable" align='left'>
                                                                 																															
                                                                 <div>{!!$email_content!!}</div>
-                                                               
-																<div style="padding-top: 2px;">
-																	<p><b>Need Help?</b> </p>
-																	<p>If you have any questions or need assistance, our support team is here for you. Reach out to us at info@nochallenge.net or call us directly at 01409991230.</p>
-																</div>
+
+																<header class="panel-heading" style="display: flex; justify-content: space-between; align-items: center;">
+																	<h3 style="margin: 0;">Ticket Information</h3>
+																	
+																</header>
+																
+                                                                <div class="panel-body" style="border-top:1px solid #ccc;padding:5px 0;margin-bottom:10px">
+                                                                    <table class="table table-striped">
+                                                                        
+                                                                        <tbody>
+                                                                        
+                                                                        <tr>
+                                                                            <td>Ticket Id : </td>
+                                                                            <td>{{$ticket_id}}</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>Project Name : </td>
+                                                                            <td>{{$project_name}}</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>Ticket Link : </td>
+                                                                            <td><a style="text-decoration: none;" target="_blank" href="https://myncportal.com/account/tickets/{{ $ticket_id }}">https://myncportal.com/account/tickets/{{ $ticket_id }}</a></td>
+                                                                        </tr>
+                                                                        
+                                                                        <tr>
+                                                                            <td>Ticket Priority : </td>
+                                                                            <td>{{$priority}}</td>
+                                                                        </tr>                                    
+                                                                        
+                                                                        </tbody>
+                                                                        
+                                                                    </table>
+                                                                </div>
+                                                               																
 															</div>
 														</div>
 													</td>

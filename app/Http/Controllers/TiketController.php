@@ -136,13 +136,15 @@ class TiketController extends Controller
 
            // for email
 
-           $subject = 'Test Subject';
-           $des = $request->project_name;
+           $subject = 'New ticket has been created';
 
 
            $message = '';
            $message .= '<h4>Congratulations</h4>';
-           $message .= '<p>Project Name <strong>'.$des .'</strong> </p>';
+           $message .= '<h4>A New ticket has been created</h4>';
+           $data['ticket_id']= $ticket->id;
+           $data['project_name']= $request->project_name;
+           $data['priority']= $request->priority;
            $data['email_content'] = $message;
            $email = $request->email;
 

@@ -8,6 +8,7 @@ use App\Models\Tiket;
 use App\Models\TiketFile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Mail;
 
 class TiketController extends Controller
 {
@@ -43,27 +44,41 @@ class TiketController extends Controller
      */
     public function store(Request $request)
     {
+        
+      
 
         $request->validate([
             'user_id' => "required",
-            'ticket_subject' => "required",
+            'project_name' => "required",
+            'ticket_subject' => "nullable",
+            'priority' => "required",
+            'email' => "required",
             'description' => "required",
-            'ticket_file' => 'required|file|max:5120',
+            'image' => 'nullable|file|max:5120',
         ],
         [
             'user_id.required' => 'The Client field is required. Please fill it in.',
-            'ticket_file.required' => 'Please select a file to upload.',
         ]);
 
-        // return $request;
+        // return $request->file('image');
 
         // for ticket
         $ticket = new Tiket();
         $ticket->company_id = 1;
         $ticket->user_id = $request->user_id;
-        $ticket->subject = $request->ticket_subject;
+        $ticket->project_name = $request->project_name;
+
+        if($request->ticket_subject){
+
+            $ticket->subject = $request->ticket_subject;
+        } else {
+            
+            $ticket->subject = $request->project_name;
+        }
+
         $ticket->status = 'open';
-        $ticket->priority = 'low';     
+        $ticket->priority = $request->priority;     
+        $ticket->email = $request->email;     
         $ticket->added_by = 1;     
         $ticket->save();
 
@@ -83,35 +98,72 @@ class TiketController extends Controller
 
          // for ticket file
 
-         $ticketFile = new TiketFile();
-
-          if ($request->ticket_file) {
-            try {
+         
+         if ($request->image) {
+             try {
+                 
+                
+                $ticketFile = new TiketFile();
                  
                  // for file upload
-                $extension = $request->ticket_file->getClientOriginalExtension();
+
+                $imageFile = $request->file('image');   
+
+                // $imageName = str_replace(' ', '_',date('YmdHis')) . '.'.$image->extension();
+                // $imageName = time().'.'.$image->extension();
+
+                $extension = $request->image->getClientOriginalExtension();
                 $img_name = str_replace(' ', '_',date('YmdHis')) . '.' . $extension;
                 
-                $img_path = env('FILE_PATH', '/home/myncportal/public_html/public/').$ticket->id.'/';
-                $img_src = env('FILE_PATH', '/home/myncportal/public_html/public/').$ticket->id.'/' . $img_name;
-                $request->ticket_file->move($img_path, $img_name);
+                //public_html/public/user-uploads/ticket-files
+                 $img_path = env('FILE_PATH1', '/home/myncportal/public_html/public/user-uploads/ticket-files/').$ticketDescription->id.'/';
+             
+                $img_src = env('FILE_PATH1', '/home/myncportal/public_html/public/user-uploads/ticket-files/').$ticketDescription->id.'/' . $img_name;
+                // $imageFile->move($img_path, $img_name);
+                $imageFile->move($img_path,$img_name);
+
+                
+
 
                 $ticketFile->filename  = $img_name;
                 $ticketFile->hashname  = $img_name;
+
+                $ticketFile->ticket_reply_id  = $ticketDescription->id;
+                $ticketFile->user_id   = 1;          
+                $ticketFile->save();
                  
             } catch (\Exception $e) {
   
                 Log::info('error'.$e->getMessage());
+                die($e->getMessage());
             }
-  
              
           }
 
+           // for email
 
-         
-         $ticketFile->ticket_reply_id  = $ticketDescription->id;
-         $ticketFile->user_id   = 1;          
-         $ticketFile->save();
+           $subject = 'New ticket has been created';
+
+
+           $message = '';
+           $message .= '<h4>Congratulations</h4>';
+           $message .= '<h4>A New ticket has been created</h4>';
+           $data['ticket_id']= $ticket->id;
+           $data['project_name']= $request->project_name;
+           $data['priority']= $request->priority;
+           $data['email_content'] = $message;
+           $email = $request->email;
+
+           if(!empty($email)){
+            Mail::send('email.user_email', $data, function ($m) use ($subject,$email) {
+                $m->from('info@nochallenge.net', 'Nochallenge.net');
+                              
+                // $m->to($email)->cc('enayet@nochallenge.net')->subject($subject);
+                $m->to($email)->cc('enayet@nochallenge.net')->subject($subject);
+            });
+
+        }
+
 
          return redirect()->back()->with('success','Your ticket created successfully');
     }

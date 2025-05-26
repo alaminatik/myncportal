@@ -1,0 +1,26 @@
+.body_bg{
+    background:  url("../img/body_bg_green.jpg") no-repeat fixed center;
+}
+header{
+        -webkit-box-shadow: 0px 18px 20px -7px rgba(0,0,0,0.32);
+    -moz-box-shadow: 0px 18px 20px -7px rgba(0,0,0,0.32);
+    box-shadow: 0px 18px 20px -7px rgba(0,0,0,0.32);
+}
+.custom_bttn{
+        border: .5px solid #126a25!important;
+        color:#126a25;
+        background:#126a25!important;
+        padding: 15px 30px!important;
+         border-radius: 30px!important;
+            
+}
+.custom_bttn:hover{
+    background:#eefef3!important;
+    border: .5px solid #8fcd30!important;
+    color:#126a25!important;
+}
+.box-shadow-custom{
+    -webkit-box-shadow: 0px 18px 20px -7px rgba(0,0,0,0.32);
+    -moz-box-shadow: 0px 18px 20px -7px rgba(0,0,0,0.32);
+    box-shadow: 0px 18px 20px -7px rgba(0,0,0,0.32);
+}

@@ -9,6 +9,7 @@ use App\Models\TiketFile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Mail;
+use App\Rules\ReCaptcha;
 
 class TiketController extends Controller
 {
@@ -55,6 +56,7 @@ class TiketController extends Controller
             'email' => "required",
             'description' => "required",
             'image' => 'nullable|file|max:5120',
+            'g-recaptcha-response' => ['required', new ReCaptcha]
         ],
         [
             'user_id.required' => 'The Client field is required. Please fill it in.',

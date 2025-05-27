@@ -62,7 +62,7 @@ class TiketController extends Controller
             'user_id.required' => 'The Client field is required. Please fill it in.',
         ]);
 
-        // return $request->file('image');
+        // return $request;
 
         // for ticket
         $ticket = new Tiket();

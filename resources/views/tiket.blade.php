@@ -277,7 +277,7 @@ body,p,h1,h2,h3,h4,h5,h6{
       <div class="form-group">
         <label for="email">reCAPTCHA</label>
        <!-- Google Recaptcha Widget-->
-          <div class="g-recaptcha mt-4" data-sitekey={{config('services.recaptcha.key')}}></div>
+          <div class="g-recaptcha mt-4" data-sitekey={{config('services.recaptcha.site_key')}}></div>
         @if ($errors->has('g-recaptcha-response'))
         <div class="text-danger">
             {{ $errors->first('g-recaptcha-response') }}
